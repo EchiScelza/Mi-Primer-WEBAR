@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Tarjeta AR</title>
+    <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/jeromeetienne/ar.js/aframe/build/aframe-ar.min.js"></script>
+  </head>
+  <body style="margin: 0; overflow: hidden;">
+    <a-scene embedded arjs>
+      <!-- Definimos el marcador -->
+      <a-marker type="pattern" url="tarjeta.patt" id="marker">
+        <!-- Video que queremos controlar -->
+        <a-video 
+          src="video-prueba.mp4" 
+          position="0 0 0" 
+          rotation="-90 0 0" 
+          width="2.5" 
+          height="4" 
+          id="myVideo"
+          autoplay="false" 
+          muted="true"> <!-- Evita que el audio se reproduzca automáticamente -->
+        </a-video>
+      </a-marker>
+      <a-entity camera></a-entity>
+    </a-scene>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        const marker = document.querySelector("#marker"); // Seleccionamos el marcador
+        const video = document.querySelector("#myVideo");  // Seleccionamos el video dentro del marcador
+
+        // Aseguramos que el video está en pausa al principio
+        video.components.material.material.map.image.pause();  // Pausar inmediatamente
+
+        // Evento: Cuando el marcador es detectado
+        marker.addEventListener("markerFound", () => {
+          console.log("Marcador detectado");
+          // Reproducir el video (solo después de que el marcador se detecte)
+          video.components.material.material.map.image.play(); 
+        });
+
+        // Evento: Cuando el marcador ya no está visible
+        marker.addEventListener("markerLost", () => {
+          console.log("Marcador perdido");
+          // Pausar el video cuando el marcador se pierde
+          video.components.material.material.map.image.pause(); 
+        });
+      });
+    </script>
+  </body>
+</html>
